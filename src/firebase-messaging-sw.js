@@ -27,3 +27,20 @@ messaging.onBackgroundMessage(function(payload) {
 
   self.registration.showNotification(notificationTitle, notificationOptions);
 });
+
+messaging.onBackgroundMessage((payload)=>{
+  const promiseChain = clients.matchAll({
+    type: 'window',
+    includeUncontrolled: true
+  })
+    .then((windowClients) => {
+      for (let i = 0; i < windowClients.length; i++) {
+        const windowClient = windowClients[i];
+        windowClient.postMessage(payload);
+      }
+    })
+    .then(() => {
+      return registration.showNotification(payload);
+    });
+  return promiseChain;
+});
