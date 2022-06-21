@@ -26,4 +26,15 @@ export class MessagingService {
         this.currentMessage.next(payload);
       });
   }
+  
+  receiveNotification () {
+    navigator.serviceWorker.addEventListener('message', (event) => {
+      console.log(event);
+      if(event.data.data){
+        this.jotnoMeetService.jotnoMeetEmitter.next(event.data);
+      } else {
+        this.appointmentService.appointmentEmitter.next(true);
+      }
+    });
+  }
 }
